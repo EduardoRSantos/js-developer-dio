@@ -8,8 +8,7 @@ let offset = 0;
 
 function convertPokemonToLi(pokemon) {
     return `
-   
-        <li class="pokemon ${pokemon.type}" data-bs-toggle="modal" data-bs-target="#pokemonStatistics">
+        <li class="pokemon ${pokemon.type}">
   
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
@@ -23,12 +22,12 @@ function convertPokemonToLi(pokemon) {
                      alt="${pokemon.name}">
             </div>
        
-        </li>
-       
+        </li>  
     `
 }
 
 function loadPokemonItens(offset, limit) {
+    console.log('asd')
     pokeApi.getPokemons(offset, limit).then((pokemons = []) => {
         const newHtml = pokemons.map(convertPokemonToLi).join('')
         pokemonList.innerHTML += newHtml
@@ -37,3 +36,16 @@ function loadPokemonItens(offset, limit) {
 
 loadPokemonItens(offset, limit)
 
+loadMoreButton.addEventListener('click', () => {
+    offset += limit;
+    const qtdRecord = offset + limit;
+
+    if (qtdRecord >= maxRecords) {
+        const newLimit = maxRecords - offset;
+        loadPokemonItens(offset, newLimit)
+        loadMoreButton.parentElement.removeChild(loadMoreButton);
+    } else {
+        loadPokemonItens(offset, limit)
+    }
+
+})
